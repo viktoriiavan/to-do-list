@@ -66,24 +66,33 @@ class App extends React.Component {
   }
 
   addItem() {
-    // create a new item with unique id
+    if (this.state.newItem.trim() === "") {
+      return; // Prevent adding empty items
+    }
+  
+    // Create a new item with a unique id
     const newItem = {
-      id: 1 + Math.random(),
-      value: this.state.newItem.slice()
- 
+      id: Date.now(), // Use timestamp as a unique ID
+      value: this.state.newItem.trim(),
     };
-
-    // copy current list of items
+  
+    // Copy the current list of items
     const list = [...this.state.list];
-
-    // add the new item to the list
+  
+    // Add the new item to the list
     list.push(newItem);
-
-    // update state with new list, reset the new item input
+  
+    // Update state with the new list and reset the new item input
     this.setState({
       list,
-      newItem: ""
+      newItem: "",
     });
+  }
+
+  handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      this.addItem();
+    }
   }
 
   deleteItem(id) {
@@ -117,6 +126,7 @@ class App extends React.Component {
             placeholder="Type item here"
             value={this.state.newItem}
             onChange={e => this.updateInput("newItem", e.target.value)}
+            onKeyPress={this.handleKeyPress} 
           />
           <button
             className="add-btn btn-floating"
